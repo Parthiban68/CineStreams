@@ -1,6 +1,8 @@
 import React from "react";
 import Button from "../../../components/common/Button";
 import MovieCards from "./MovieCards";
+import ComedyMovieCards from "./ComedyMovieCards";
+import ActionMoviesCard from "./ActionMoviesCard";
 
 const Hero = () => {
  
@@ -38,6 +40,8 @@ const Hero = () => {
         </div>
       </section>
       <MovieCards/>
+      <ActionMoviesCard/>
+      <ComedyMovieCards/>
     </div>
   );
 };

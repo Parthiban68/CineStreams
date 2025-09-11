@@ -19,6 +19,8 @@ const NavBar = () => {
     } 
     else if (Location.pathname === "/kids") {
       setIsActive("kids");
+    }else{
+      setIsActive("");
     }
   }, [Location]);
 

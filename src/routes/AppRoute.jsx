@@ -6,6 +6,7 @@ import DetailsPage from "../pages/DetailsPage";
 import MoviesPage from "../pages/MoviesPage";
 import SeriesPage from "../pages/SeriesPage";
 import KidsPage from "../pages/KidsPage";
+import SeeAllPage from "../pages/SeeAllPage";
 const AppRoute = () => {
   return (
     <>
@@ -16,6 +17,7 @@ const AppRoute = () => {
         <Route path="/movie" element={<MoviesPage />} />
         <Route path="/series" element={<SeriesPage />} />
         <Route path="/kids" element={<KidsPage />} />
+        <Route path="/seeall/:id" element={<SeeAllPage />} />
       </Routes>
     </>
   );

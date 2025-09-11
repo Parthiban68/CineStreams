@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 const CastAndCrewCard = () => {
@@ -11,6 +11,18 @@ const CastAndCrewCard = () => {
   const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
   };
+
+  useEffect(() => {
+    if (drawerOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [drawerOpen]);
+
   if (loading || list === null)
     return <p className="text-center text-white text-2xl mt-6">Loading...</p>;
   if (error) return <p className="text-center text-gray-500">error</p>;
@@ -133,32 +145,38 @@ const CastAndCrewCard = () => {
           </div>
           {/* Cast List */}
           <div className="min-w-[180px] flex-1">
-            <h4 className="font-semibold mb-1 text-gray-300">CAST</h4>
-            <ul className="space-y-3 max-h-[15rem] overflow-hidden">
-              {list.credits.cast.slice(0, 4).map((actor, idx) => (
-                <li key={idx} className="flex items-center gap-3">
-                  <img
-                    src={`https://image.tmdb.org/t/p/original${actor.profile_path}`}
-                    alt={actor.name}
-                    className="w-10 h-10 rounded-full object-cover shadow-md border border-gray-600"
-                  />
-                  <span>
-                    <span className="font-semibold text-white">
+            <div className="flex items-center justify-between mb-2">
+              <h4 className="font-semibold text-2xl mb-1 text-gray-300">Cast</h4>
+              <button
+                onClick={toggleDrawer}
+                className="ml-2 text-blue-400 hover:underline text-lg font-semibold"
+              >
+                See all
+              </button>
+            </div>
+            <div className="flex items-center justify-between">
+              <ul className="flex gap-5">
+                {list.credits.cast.slice(0, 5).map((actor, idx) => (
+                  <li key={idx} className="flex flex-col items-center">
+                    <img
+                      src={
+                        actor.profile_path
+                          ? `https://image.tmdb.org/t/p/original${actor.profile_path}`
+                          : "https://thumbs.dreamstime.com/b/user-profile-vector-flat-illustration-avatar-person-icon-gender-neutral-silhouette-profile-picture-user-profile-vector-flat-304778094.jpg"
+                      }
+                      alt={actor.name}
+                      className="w-32 h-32 rounded-full object-cover shadow-md border border-gray-600"
+                    />
+                    <span className="font-semibold text-white text-xs mt-1 block text-center w-20 truncate">
                       {actor.name}
                     </span>
-                    <span className="ml-1 text-gray-300 text-sm font-normal">
+                    <span className="text-gray-300 text-xs font-normal block text-center w-20 truncate">
                       {actor.character}
                     </span>
-                  </span>
-                </li>
-              ))}
-            </ul>
-            <button
-              onClick={toggleDrawer}
-              className="mt-2 inline-block text-blue-400 hover:underline text-sm"
-            >
-              See all
-            </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
           {/* Bottom Drawer */}
@@ -184,11 +202,11 @@ const CastAndCrewCard = () => {
                       className="flex flex-col items-center text-center"
                     >
                       <img
-                       src={
-                        actor.profile_path
-                          ? `https://image.tmdb.org/t/p/original${actor.profile_path}`
-                          : "https://thumbs.dreamstime.com/b/user-profile-vector-flat-illustration-avatar-person-icon-gender-neutral-silhouette-profile-picture-user-profile-vector-flat-304778094.jpg"
-                      }
+                        src={
+                          actor.profile_path
+                            ? `https://image.tmdb.org/t/p/original${actor.profile_path}`
+                            : "https://thumbs.dreamstime.com/b/user-profile-vector-flat-illustration-avatar-person-icon-gender-neutral-silhouette-profile-picture-user-profile-vector-flat-304778094.jpg"
+                        }
                         alt={actor.name}
                         className="w-32 h-32 rounded-full object-cover shadow-md border border-gray-700 mb-2"
                       />
