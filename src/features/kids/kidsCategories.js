@@ -1,0 +1,52 @@
+export const KIDS_CATEGORIES = [
+  {
+    key: "featured",
+    label: "Kids",
+    title: "Featured for Kids",
+    eyebrow: "Handpicked",
+    genreId: null,
+    accent: "#FF7A59",
+    description:
+      "Big-hearted stories, bright worlds and heroes of every size.",
+  },
+  {
+    key: "animation",
+    label: "Animation",
+    title: "Animation",
+    eyebrow: "Bright & bold",
+    genreId: 16,
+    accent: "#FFD166",
+  },
+  {
+    key: "family",
+    label: "Family",
+    title: "Family Favorites",
+    eyebrow: "Watch together",
+    genreId: 10751,
+    accent: "#5EEAD4",
+  },
+  {
+    key: "adventure",
+    label: "Adventure",
+    title: "More Adventures",
+    eyebrow: "Go somewhere new",
+    genreId: 12,
+    accent: "#7DD3FC",
+  },
+  {
+    key: "comedy",
+    label: "Comedy",
+    title: "Laugh Out Loud",
+    eyebrow: "Feel-good picks",
+    genreId: 35,
+    accent: "#FCA5A5",
+  },
+  {
+    key: "fantasy",
+    label: "Fantasy",
+    title: "Fantasy Worlds",
+    eyebrow: "Magic awaits",
+    genreId: 14,
+    accent: "#C4B5FD",
+  },
+];

@@ -5,6 +5,7 @@ import popularMovies from "./slices/popularMoviesSlice";
 import comdeyMovieInHome from "./slices/comedyMovieInHomeSlice";
 import actionMovieInHome from "./slices/actionMovieInHomeSlice";
 import seeAllMoviesSlice from "./slices/seeAllMoviesSlice";
+import kidsMovies from "./slices/kidsMoviesSlice";
 
 const rootReducer = combineReducers({
   trendingMovies: tredingMovieReducer,
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
   comdeyMovieInHome: comdeyMovieInHome,
   actionMovieInHome: actionMovieInHome,
   seeAllMoviesSlice: seeAllMoviesSlice,
+  kidsMovies: kidsMovies,
 });
 
 export default rootReducer;
