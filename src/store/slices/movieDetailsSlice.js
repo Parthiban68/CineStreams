@@ -10,10 +10,12 @@ const movieDetailsById = createSlice({
   reducers: {
     fetchMovieDetailsByIdStart: (state) => {
       state.loading = true;
+      state.error = null;
     },
     fetchMovieDetailsByIdSuccess: (state, action) => {
       state.list = action.payload;
       state.loading = false;
+      state.error = null;
     },
     fetchMovieDetailsByIdFailure: (state, action) => {
       state.error = action.payload;

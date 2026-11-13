@@ -10,13 +10,15 @@ const popularMovies = createSlice({
   reducers: {
     fetchPopularMoviesStart: (state) => {
       state.loading = true;
+      state.error = null;
     },
     fetchPopularMoviesSuccees: (state, action) => {
       state.list = action.payload;
       state.loading = false;
+      state.error = null;
     },
     fetchPopularMoviesFailre: (state, action) => {
-      state.list = action.error;
+      state.error = action.payload;
       state.loading = false;
     },
   },

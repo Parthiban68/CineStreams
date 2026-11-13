@@ -7,7 +7,7 @@ import {
   fetchMovieDetailsByIdFailure,
 } from "../../../store/slices/movieDetailsSlice";
 
-const fetchMovieDetails = (id) => {
+const useMovieDetails = (id) => {
   const dispatch = useDispatch();
   const { list, loading, error } = useSelector(
     (state) => state.movieDetailsById
@@ -19,12 +19,16 @@ const fetchMovieDetails = (id) => {
         const data = await getMovieDetailsById(id);
         dispatch(fetchMovieDetailsByIdSuccess(data));
       } catch (error) {
-        dispatch(fetchMovieDetailsByIdFailure(error));
+        dispatch(
+          fetchMovieDetailsByIdFailure(
+            error?.message || "Unable to load movie details."
+          )
+        );
       }
     };
     fetchMovieById();
-  },[dispatch]);
+  }, [dispatch, id]);
   return { list, loading, error };
 };
 
-export default fetchMovieDetails;
+export default useMovieDetails;

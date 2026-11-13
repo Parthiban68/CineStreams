@@ -7,7 +7,7 @@ import {
   fetchActionMovieInHomeFailure,
 } from "../../../store/slices/actionMovieInHomeSlice";
 
-const actionMoviesInHome = () => {
+const useActionMoviesInHome = () => {
   const dispatch = useDispatch();
   const { list, loading, error } = useSelector(
     (state) => state.actionMovieInHome
@@ -17,11 +17,13 @@ const actionMoviesInHome = () => {
       try {
         dispatch(fetchActionMovieInHomeStart());
         const data = await getMoviesBasedonAction();
-        console.log(data);
-
         dispatch(fetchActionMovieInHomeSuccess(data));
       } catch (error) {
-        dispatch(fetchActionMovieInHomeFailure());
+        dispatch(
+          fetchActionMovieInHomeFailure(
+            error?.message || "Unable to load action movies."
+          )
+        );
       }
     };
     loadActionMoviesInHome();
@@ -29,4 +31,4 @@ const actionMoviesInHome = () => {
   return { list, loading, error };
 };
 
-export default actionMoviesInHome;
+export default useActionMoviesInHome;

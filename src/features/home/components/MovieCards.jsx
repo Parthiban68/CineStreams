@@ -2,6 +2,8 @@ import React, { useRef } from "react";
 import useMoviesCard from "../hooks/useMoviesCard";
 import { NavLink } from "react-router-dom";
 import useHomeMovies from "../hooks/useHomeMovies";
+import { SkeletonCarousel } from "../../../components/skeletons";
+import ContentState from "../../../components/common/ContentState";
 
 const genreMap = {
   28: "Action",
@@ -25,7 +27,19 @@ const genreMap = {
   37: "Western",
 };
 
-// Movie Card component (unchanged)
+const formatReleaseDate = (releaseDate) => {
+  if (!releaseDate) return "Unknown release";
+
+  const date = new Date(releaseDate);
+  if (Number.isNaN(date.getTime())) return "Unknown release";
+
+  return date.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+};
+
 function MovieCardMini({
   poster_path,
   title,
@@ -34,56 +48,61 @@ function MovieCardMini({
   vote_average,
   release_date,
 }) {
+  const genres = genre_ids || [];
+  const rating =
+    typeof vote_average === "number" && vote_average > 0
+      ? vote_average.toFixed(1)
+      : "N/A";
+
   return (
-    <div className="relative w-52 h-80 rounded-xl overflow-hidden shadow-lg group">
-      {/* Poster Image */}
+    <div className="group relative aspect-[2/3] w-36 shrink-0 snap-start overflow-hidden rounded-xl bg-white/[0.04] shadow-lg sm:w-40 md:w-44 lg:w-52">
       <img
-        src={`https://image.tmdb.org/t/p/w500${poster_path}`}
+        src={
+          poster_path
+            ? `https://image.tmdb.org/t/p/w500${poster_path}`
+            : "https://via.placeholder.com/300x450?text=No+Image"
+        }
         alt={title}
-        className="absolute inset-0 w-full h-full object-cover transition-transform duration-400 group-hover:scale-105"
+        className="absolute inset-0 h-full w-full rounded-xl object-cover transition-transform duration-200 group-hover:scale-105"
         draggable={false}
+        loading="lazy"
       />
 
-      {/* Title - Bottom Left, with z-index */}
-      <div className="absolute bottom-8 left-3 z-20 text-base font-bold text-white drop-shadow-sm ">
+      <div className="absolute bottom-8 left-3 right-3 z-20 line-clamp-2 text-sm font-bold text-white drop-shadow-sm sm:text-base">
         <span>{title}</span>
       </div>
 
-      {/* Rating - Bottom Left, below title, with z-index */}
-      <div className="absolute bottom-2 left-3 z-20 flex items-center gap-1 text-sm text-white drop-shadow-sm">
-        <span className="text-yellow-400 text-lg">★</span>
-        <span>{vote_average.toFixed(1)}</span>
+      <div className="absolute bottom-2 left-3 z-20 flex items-center gap-1 text-xs text-white drop-shadow-sm sm:text-sm">
+        <span className="text-lg text-yellow-400">★</span>
+        <span>{rating}</span>
       </div>
 
-      {/* Hover Details Overlay */}
-      <div className="absolute inset-0 bg-black/20 text-white opacity-0 z-30 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-md flex flex-col justify-end p-4 ">
-        <h2 className="text-base font-bold mb-1">{title}</h2>
-        <div className="flex items-center gap-1 text-base text-white mb-2">
-          <span className="text-yellow-400 text-base">★</span>
-          <span>{vote_average.toFixed(1)}</span>
+      <div className="absolute inset-0 z-30 flex flex-col justify-end bg-black/80 p-3 text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100 sm:p-4">
+        <h2 className="mb-1 line-clamp-2 text-sm font-bold sm:text-base">
+          {title}
+        </h2>
+        <div className="mb-2 flex items-center gap-1 text-sm text-white">
+          <span className="text-base text-yellow-400">★</span>
+          <span>{rating}</span>
         </div>
 
-        <p className="text-xs mb-2 line-clamp-3">{overview}</p>
-        <div className="flex flex-wrap gap-1 justify-start mb-2">
-          {genre_ids.map((id) => (
+        <p className="mb-2 line-clamp-3 text-xs">{overview}</p>
+        <div className="mb-2 flex flex-wrap gap-1 justify-start">
+          {genres.map((id) => (
             <span
               key={id}
-              className="bg-color-bg text-xs font-medium text-white px-2 py-0.5 rounded-md"
+              className="rounded-md bg-color-bg px-2 py-0.5 text-[10px] font-medium text-white"
             >
               {genreMap[id] || "Other"}
             </span>
           ))}
         </div>
-        <div className="text-white text-xs font-bold">
-          {new Date(release_date).toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-          })}
+        <div className="text-xs font-bold text-white">
+          {formatReleaseDate(release_date)}
         </div>
       </div>
 
-      <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/70 to-transparent pointer-events-none z-10" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-24 rounded-b-xl bg-gradient-to-t from-black/70 to-transparent" />
     </div>
   );
 }
@@ -94,38 +113,44 @@ function MovieHorizontalScroll({ movies }) {
   useMoviesCard(scrollRef);
 
   const scrollByCard = (dir) => {
-    const cardWidth = 196;
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({
-        left: dir * cardWidth * 2.5,
-        behavior: "smooth",
-      });
-    }
+    const scrollContainer = scrollRef.current;
+    if (!scrollContainer) return;
+
+    scrollContainer.scrollBy({
+      left:
+        dir *
+        Math.max(
+          scrollContainer.clientWidth * 0.8,
+          scrollContainer.firstElementChild?.offsetWidth || 320
+        ),
+      behavior: "smooth",
+    });
   };
 
   return (
-    <div className="relative w-full py-6 select-none">
-      {/* Scrollable Card Row */}
+    <div className="relative w-full select-none py-4 sm:py-6">
       <div
         ref={scrollRef}
-        className="flex overflow-x-auto scrollbar-hide snap-x snap-mandatory pl-10 pr-10 gap-4"
+        className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 scrollbar-hide sm:mx-0 sm:gap-4 sm:px-0"
         style={{ scrollBehavior: "smooth" }}
       >
-        {movies.map((m, idx) => (
-          <div key={m.title + idx} className="snap-start">
-            <NavLink to={`/movie/${m.id}`}>
-              <MovieCardMini {...m} />
-            </NavLink>
-          </div>
+        {movies.map((movie) => (
+          <NavLink
+            key={movie.id}
+            to={`/movie/${movie.id}`}
+            className="shrink-0 snap-start"
+          >
+            <MovieCardMini {...movie} />
+          </NavLink>
         ))}
       </div>
 
-      {/* Buttons at Bottom Center */}
-      <div className="flex justify-center gap-6 mt-4">
+      <div className="mt-4 flex justify-center gap-4">
         <button
-          aria-label="Scroll Left"
+          type="button"
+          aria-label="Scroll trending movies left"
           onClick={() => scrollByCard(-1)}
-          className="bg-white/40 backdrop-blur-lg opacity-100 rounded-full p-3 shadow-md border border-white/40"
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition duration-200 hover:bg-white/20"
         >
           <svg
             width={20}
@@ -141,9 +166,10 @@ function MovieHorizontalScroll({ movies }) {
           </svg>
         </button>
         <button
-          aria-label="Scroll Right"
+          type="button"
+          aria-label="Scroll trending movies right"
           onClick={() => scrollByCard(1)}
-          className="bg-white/40 backdrop-blur-lg opacity-100 rounded-full p-3 shadow-md border border-white/40"
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition duration-200 hover:bg-white/20"
         >
           <svg
             width={20}
@@ -166,15 +192,56 @@ function MovieHorizontalScroll({ movies }) {
 export default function MovieCards() {
   const { list, loading, error } = useHomeMovies();
 
-  if (loading || list === null)
-    return <p className="text-center text-white text-2xl mt-6">Loading...</p>;
-  if (error) return <p className="text-center text-gray-500">error</p>;
+  if (loading) {
+    return (
+      <section
+        role="status"
+        aria-busy="true"
+        aria-label="Loading trending movies"
+        className="px-4 py-10 sm:px-6 md:py-12 lg:px-10"
+      >
+        <SkeletonCarousel
+          cardClassName="w-36 sm:w-40 md:w-44 lg:w-52"
+          cardRounded="rounded-xl"
+          showEyebrow={false}
+          showAction={false}
+          showMeta={false}
+        />
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="px-4 py-8 sm:px-6 lg:px-10">
+        <ContentState
+          variant="error"
+          title="Trending movies are unavailable"
+          message="We couldn't load this collection. Please try again in a moment."
+        />
+      </section>
+    );
+  }
+
+  if (!list || list.length === 0) {
+    return (
+      <section className="px-4 py-8 sm:px-6 lg:px-10">
+        <ContentState
+          title="No trending movies right now"
+          message="New picks will appear here soon."
+        />
+      </section>
+    );
+  }
+
   return (
-    <div className="h-auto py-12 px-5">
-      <h1 className="text-3xl mb-2">Trending Movies</h1>
+    <section className="px-4 py-10 sm:px-6 md:py-12 lg:px-10">
+      <h1 className="mb-2 text-xl font-semibold tracking-tight sm:text-2xl lg:text-3xl">
+        Trending Movies
+      </h1>
       <div className="mx-auto">
         <MovieHorizontalScroll movies={list} />
       </div>
-    </div>
+    </section>
   );
 }

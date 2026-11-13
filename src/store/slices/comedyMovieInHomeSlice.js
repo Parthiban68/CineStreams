@@ -10,10 +10,12 @@ const comdeyMovieInHome = createSlice({
     reducers: {
       fetchComdeyMovieInHomeStart: (state) => {
         state.loading = true;
+        state.error = null;
       },
       fetchComdeyMovieInHomeSuccess: (state, action) => {
         state.list = action.payload;
         state.loading = false;
+        state.error = null;
       },
       fetchComdeyMovieInHomeFailure: (state, action) => {
         state.error = action.payload;

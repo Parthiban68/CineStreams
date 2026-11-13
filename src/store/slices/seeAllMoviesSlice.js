@@ -10,10 +10,12 @@ const seeAllMoviesSlice = createSlice({
   reducers: {
     fetchSeeAllMoviesSliceStart: (state) => {
       state.loading = true;
+      state.error = null;
     },
     fetchSeeAllMoviesSliceSuccess: (state, action) => {
       state.list = action.payload;
       state.loading = false;
+      state.error = null;
     },
     fetchSeeAllMoviesSliceFailure: (state, action) => {
       state.error = action.payload;

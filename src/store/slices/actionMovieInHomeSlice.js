@@ -10,10 +10,12 @@ const actionMovieInHome = createSlice({
     reducers: {
       fetchActionMovieInHomeStart: (state) => {
         state.loading = true;
+        state.error = null;
       },
       fetchActionMovieInHomeSuccess: (state, action) => {
         state.list = action.payload;
         state.loading = false;
+        state.error = null;
       },
       fetchActionMovieInHomeFailure: (state, action) => {
         state.error = action.payload;

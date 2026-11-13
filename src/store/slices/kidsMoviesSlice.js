@@ -17,6 +17,7 @@ const kidsMoviesSlice = createSlice({
       state.hero = action.payload.hero;
       state.sections = action.payload.sections;
       state.loading = false;
+      state.error = null;
     },
     fetchKidsMoviesFailure: (state, action) => {
       state.error = action.payload;

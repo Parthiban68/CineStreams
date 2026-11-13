@@ -1,30 +1,27 @@
 import { useEffect } from "react";
 
-const useMoviesCard = (scroll) => {
-  const scrollRef = scroll;
-
+const useMoviesCard = (scrollRef) => {
   const autoScrollInterval = 10000;
 
   useEffect(() => {
     const scrollContainer = scrollRef.current;
     if (!scrollContainer) return;
-
-    const scrollStep = 196 * 2.5;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const intervalId = setInterval(() => {
-      if (scrollContainer) {
-        const maxScrollLeft =
-          scrollContainer.scrollWidth - scrollContainer.clientWidth;
-        if (scrollContainer.scrollLeft + scrollStep >= maxScrollLeft) {
-          scrollContainer.scrollTo({ left: 0, behavior: "smooth" });
-        } else {
-          scrollContainer.scrollBy({ left: scrollStep, behavior: "smooth" });
-        }
+      const scrollStep = Math.max(scrollContainer.clientWidth * 0.8, 320);
+      const maxScrollLeft =
+        scrollContainer.scrollWidth - scrollContainer.clientWidth;
+
+      if (scrollContainer.scrollLeft + scrollStep >= maxScrollLeft) {
+        scrollContainer.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        scrollContainer.scrollBy({ left: scrollStep, behavior: "smooth" });
       }
     }, autoScrollInterval);
 
     return () => clearInterval(intervalId);
-  }, [autoScrollInterval]);
+  }, [autoScrollInterval, scrollRef]);
 };
 
 export default useMoviesCard;

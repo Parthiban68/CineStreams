@@ -1,22 +1,67 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
-import sellAllMovies from "../hooks/useSeeAllMovies";
+import useSeeAllMovies from "../hooks/useSeeAllMovies";
+import {
+  SkeletonBase,
+  SkeletonMovieGrid,
+} from "../../../components/skeletons";
+import ContentState from "../../../components/common/ContentState";
 
 const SeeAllMovieCards = () => {
   const { id } = useParams();
   const [page, setPage] = useState(1);
-  const totalPages = 100; // Fixed for redesign
+  const totalPages = 100;
 
-  const { list, loading, error } = sellAllMovies({ id, page });
+  const { list, loading, error } = useSeeAllMovies({ id, page });
 
-  if (loading || list === null)
-    return <p className="text-center text-white text-2xl mt-10">Loading...</p>;
-  if (error) return <p className="text-center text-gray-500">error</p>;
+  useEffect(() => {
+    setPage(1);
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div
+        role="status"
+        aria-busy="true"
+        aria-label="Loading movies"
+        className="mx-auto w-full max-w-[1600px] px-4 pb-12 pt-24 sm:px-6 lg:px-10"
+      >
+        <div aria-hidden="true">
+          <SkeletonBase className="h-9 w-48 rounded-xl" />
+          <SkeletonBase className="mt-3 h-3 w-32 rounded-full" />
+          <SkeletonMovieGrid count={10} className="mt-8" />
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="mx-auto w-full max-w-[1600px] px-4 pb-12 pt-24 sm:px-6 lg:px-10">
+        <ContentState
+          variant="error"
+          title="Movies are unavailable"
+          message="We couldn't load this collection. Please try again in a moment."
+        />
+      </div>
+    );
+  }
+
+  if (!list || list.length === 0) {
+    return (
+      <div className="mx-auto w-full max-w-[1600px] px-4 pb-12 pt-24 sm:px-6 lg:px-10">
+        <ContentState
+          title="No movies found"
+          message="There are no movies in this collection right now."
+        />
+      </div>
+    );
+  }
 
   const paginationRange = () => {
     const delta = 2;
     const range = [];
-    let l;
+    let lastPage;
 
     for (let i = 1; i <= totalPages; i++) {
       if (
@@ -25,79 +70,101 @@ const SeeAllMovieCards = () => {
         (i >= page - delta && i <= page + delta)
       ) {
         range.push(i);
-        l = i;
-      } else if (l && i - l > 1) {
+        lastPage = i;
+      } else if (lastPage && i - lastPage > 1) {
         range.push("...");
-        l = null;
+        lastPage = null;
       }
     }
+
     return range;
   };
 
   return (
-    <div className="py-10 px-3 max-w-[101rem] mx-auto">
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8 mt-20">
+    <div className="mx-auto w-full max-w-[1600px] px-4 pb-12 pt-24 sm:px-6 lg:px-10">
+      <header className="mb-8">
+        <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+          Browse Movies
+        </h1>
+        <p className="mt-2 text-sm text-white/50 sm:text-base">
+          Discover movies by genre and explore more pages.
+        </p>
+      </header>
+
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4 lg:gap-8 xl:grid-cols-5">
         {list.map((movie) => (
-          <NavLink to={`/movie/${movie.id}`}>
-            <div
-              key={movie.id}
-              className=" rounded-3xl shadow-lg p-6 flex flex-col hover:shadow-2xl transition-shadow duration-300"
-            >
-              <img
-                src={
-                  movie.poster_path
-                    ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-                    : "https://via.placeholder.com/300x450?text=No+Image"
-                }
-                alt={movie.title}
-                className="rounded-2xl h-80 w-54 object-cover mb-2 select-none"
-                draggable={false}
-              />
-              <h2 className="text-lg font-extrabold mb-2 text-white truncate">
+          <NavLink
+            key={movie.id}
+            to={`/movie/${movie.id}`}
+            className="group min-w-0"
+          >
+            <article className="flex h-full flex-col">
+              <div className="relative overflow-hidden rounded-2xl bg-white/[0.04] shadow-lg">
+                <img
+                  src={
+                    movie.poster_path
+                      ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                      : "https://via.placeholder.com/300x450?text=No+Image"
+                  }
+                  alt={movie.title}
+                  className="aspect-[2/3] w-full rounded-2xl object-cover transition-transform duration-300 group-hover:scale-105"
+                  draggable={false}
+                  loading="lazy"
+                />
+                <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/70 to-transparent" />
+              </div>
+
+              <h2 className="mt-3 truncate text-sm font-semibold text-white sm:text-base">
                 {movie.title}
               </h2>
-              <p className="text-gray-700 dark:text-gray-300 line-clamp-3 flex-grow mb-2 text-[0.75rem]">
+              <p className="mt-1 line-clamp-2 flex-grow text-xs leading-5 text-white/50 sm:text-sm">
                 {movie.overview || "No overview available."}
               </p>
-              <div className="flex items-center gap-2 text-yellow-500 font-bold text-base mt-auto">
+              <div className="mt-2 flex items-center gap-1.5 text-sm font-bold text-yellow-400">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6 fill-current"
+                  className="h-4 w-4 fill-current"
                   viewBox="0 0 20 20"
+                  aria-hidden="true"
                 >
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.978a1 1 0 00.95.69h4.214c.969 0 1.371 1.24.588 1.81l-3.417 2.48a1 1 0 00-.364 1.118l1.286 3.977c.3.922-.755 1.688-1.54 1.118l-3.417-2.48a1 1 0 00-1.175 0l-3.417 2.48c-.784.57-1.838-.196-1.539-1.118l1.285-3.977a1 1 0 00-.363-1.118L2.035 9.405c-.783-.57-.38-1.81.588-1.81h4.215a1 1 0 00.95-.69l1.286-3.978z" />
                 </svg>
                 <span className="text-white">
-                  {movie.vote_average ? movie.vote_average.toFixed(1) : "N/A"}
+                  {typeof movie.vote_average === "number" &&
+                  movie.vote_average > 0
+                    ? movie.vote_average.toFixed(1)
+                    : "N/A"}
                 </span>
               </div>
-            </div>
+            </article>
           </NavLink>
         ))}
       </div>
 
-      {/* Pagination Bar */}
-      <div className="flex justify-center mt-14">
-        <nav className="inline-flex items-center bg-white/40 dark:bg-neutral-800/50 backdrop-blur-lg rounded-xl px-6 py-3 shadow-lg select-none">
+      <div className="mt-12 flex justify-center">
+        <nav
+          aria-label="Movie pages"
+          className="flex max-w-full items-center gap-1 overflow-x-auto rounded-2xl border border-white/[0.06] bg-white/[0.03] px-2 py-2 scrollbar-hide sm:px-4"
+        >
           {paginationRange().map((item, index) =>
             item === "..." ? (
               <span
                 key={`ellipsis-${index}`}
-                className="px-3 py-1 mx-1 text-gray-500 dark:text-gray-400"
+                className="px-2 py-1 text-sm text-white/40"
               >
                 ...
               </span>
             ) : (
               <button
+                type="button"
                 key={item}
                 onClick={() => setPage(item)}
-                className={`px-4 py-2 mx-1 rounded-lg font-semibold transition 
-                  ${
-                    item === page
-                      ? "bg-white/80 dark:bg-neutral-900 text-blue-600 shadow-lg"
-                      : "hover:bg-white/60 hover:dark:bg-neutral-700 text-gray-900 dark:text-gray-100"
-                  }
-                `}
+                aria-current={item === page ? "page" : undefined}
+                className={`h-9 min-w-9 shrink-0 rounded-lg px-2 text-sm font-semibold transition ${
+                  item === page
+                    ? "bg-color-primary text-color-bg"
+                    : "text-white/60 hover:bg-white/10 hover:text-white"
+                }`}
               >
                 {item}
               </button>

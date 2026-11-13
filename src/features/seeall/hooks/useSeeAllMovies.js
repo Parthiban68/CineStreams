@@ -7,7 +7,7 @@ import {
   fetchSeeAllMoviesSliceFailure,
 } from "../../../store/slices/seeAllMoviesSlice";
 
-const sellAllMovies = ({ id, page }) => {
+const useSeeAllMovies = ({ id, page }) => {
   const dispatch = useDispatch();
   const { list, loading, error } = useSelector(
     (state) => state.seeAllMoviesSlice
@@ -19,12 +19,16 @@ const sellAllMovies = ({ id, page }) => {
         const data = await getMoviesBasedonGenresAndPage({ id, page });
         dispatch(fetchSeeAllMoviesSliceSuccess(data));
       } catch (error) {
-        dispatch(fetchSeeAllMoviesSliceFailure(error));
+        dispatch(
+          fetchSeeAllMoviesSliceFailure(
+            error?.message || "Unable to load movies."
+          )
+        );
       }
     };
     loadSeeAllMovies();
-  }, [dispatch, page]);
+  }, [dispatch, id, page]);
   return { list, loading, error };
 };
 
-export default sellAllMovies;
+export default useSeeAllMovies;

@@ -23,8 +23,18 @@ const BackgroundAccents = () => (
   </div>
 );
 
-const KidsStateScreen = ({ icon, title, message, actionLabel, onAction }) => (
-  <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-color-bg px-5 pt-24 text-white">
+const KidsStateScreen = ({
+  icon,
+  title,
+  message,
+  actionLabel,
+  onAction,
+  isError = false,
+}) => (
+  <div
+    role={isError ? "alert" : undefined}
+    className="relative flex min-h-screen items-center justify-center overflow-hidden bg-color-bg px-5 pt-24 text-white"
+  >
     <BackgroundAccents />
     <div className="relative z-10 mx-auto max-w-md text-center">
       <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-kids-accent">
@@ -62,6 +72,7 @@ const KidsPage = () => {
         message="We couldn't load the Kids collection right now. Check your connection and try again."
         actionLabel="Try again"
         onAction={refetch}
+        isError
       />
     );
   }

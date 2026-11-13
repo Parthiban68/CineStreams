@@ -7,7 +7,7 @@ import {
   fetchComdeyMovieInHomeFailure,
 } from "../../../store/slices/comedyMovieInHomeSlice";
 
-const comedyMoviesInHome = () => {
+const useComedyMoviesInHome = () => {
   const dispatch = useDispatch();
   const { list, loading, error } = useSelector(
     (state) => state.comdeyMovieInHome
@@ -19,7 +19,11 @@ const comedyMoviesInHome = () => {
         const data = await getMoviesBasedonComedy();
         dispatch(fetchComdeyMovieInHomeSuccess(data));
       } catch (error) {
-        dispatch(fetchComdeyMovieInHomeFailure());
+        dispatch(
+          fetchComdeyMovieInHomeFailure(
+            error?.message || "Unable to load comedy movies."
+          )
+        );
       }
     };
     loadComdeyMoviesInHome();
@@ -27,4 +31,4 @@ const comedyMoviesInHome = () => {
   return { list, loading, error };
 };
 
-export default comedyMoviesInHome;
+export default useComedyMoviesInHome;

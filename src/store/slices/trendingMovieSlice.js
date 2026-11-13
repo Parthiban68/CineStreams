@@ -10,10 +10,12 @@ const trendingMovieSlice = createSlice({
   reducers: {
     fetchTrendingMovieStart: (state) => {
       state.loading = true;
+      state.error = null;
     },
     fetchTrendingMovieSuccess: (state, action) => {
       state.list = action.payload;
       state.loading = false;
+      state.error = null;
     },
     fetchTrendingMovieFailure: (state, action) => {
       state.error = action.payload;

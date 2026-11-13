@@ -7,7 +7,7 @@ import {
   fetchTrendingMovieFailure,
 } from "../../../store/slices/trendingMovieSlice";
 
-const fetchTrendingMovies = () => {
+const useMoviesHero = () => {
   const dispatch = useDispatch();
   const { list, loading, error } = useSelector((state) => state.trendingMovies);
   useEffect(() => {
@@ -25,4 +25,4 @@ const fetchTrendingMovies = () => {
   return { list, loading, error };
 };
 
-export default fetchTrendingMovies;
+export default useMoviesHero;
