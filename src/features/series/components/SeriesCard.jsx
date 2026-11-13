@@ -1,12 +1,9 @@
 import React from "react";
-import {
-  IoFilmOutline,
-  IoInformationCircleOutline,
-  IoStar,
-} from "react-icons/io5";
+import { NavLink } from "react-router-dom";
+import { IoFilmOutline, IoPlay, IoStar } from "react-icons/io5";
 import { TV_GENRE_MAP } from "../seriesGenres";
 
-const SeriesCard = ({ series, onSelect, className = "" }) => {
+const SeriesCard = ({ series, className = "" }) => {
   const {
     name,
     original_name,
@@ -27,10 +24,9 @@ const SeriesCard = ({ series, onSelect, className = "" }) => {
     .filter(Boolean)[0];
 
   return (
-    <button
-      type="button"
-      onClick={() => onSelect?.(series)}
-      aria-label={`View details for ${displayTitle}`}
+    <NavLink
+      to={`/series/${series.id}`}
+      aria-label={`View series details for ${displayTitle}`}
       className={`group/card block w-full min-w-0 text-left focus:outline-none ${className}`}
     >
       <div className="relative aspect-[2/3] overflow-hidden rounded-2xl bg-white/[0.04] ring-1 ring-white/[0.06] transition duration-200 group-hover/card:ring-white/20 group-focus-visible/card:ring-color-primary">
@@ -59,8 +55,8 @@ const SeriesCard = ({ series, onSelect, className = "" }) => {
 
         <div className="absolute inset-0 flex items-center justify-center bg-black/45 opacity-0 transition-opacity duration-200 group-hover/card:opacity-100 group-focus-visible/card:opacity-100">
           <span className="inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-2 text-xs font-bold text-color-bg shadow-lg">
-            <IoInformationCircleOutline size={15} />
-            Details
+            <IoPlay size={13} />
+            View Series
           </span>
         </div>
       </div>
@@ -77,7 +73,7 @@ const SeriesCard = ({ series, onSelect, className = "" }) => {
           {genre && <span className="truncate">{genre}</span>}
         </div>
       </div>
-    </button>
+    </NavLink>
   );
 };
 

@@ -22,7 +22,7 @@ const ResultSkeleton = () => (
   </div>
 );
 
-const SearchPanel = ({ onClose, onSelectSeries }) => {
+const SearchPanel = ({ onClose }) => {
   const [query, setQuery] = useState("");
   const inputRef = useRef(null);
   const { results, loading, error, retry } = useSearch(query);
@@ -180,26 +180,20 @@ const SearchPanel = ({ onClose, onSelectSeries }) => {
 
                 return (
                   <li key={`${item.media_type}-${item.id}`}>
-                    {isSeries ? (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          onSelectSeries?.(item);
-                          onClose?.();
-                        }}
-                        className={rowClassName}
-                      >
-                        {rowContent}
-                      </button>
-                    ) : (
-                      <NavLink
-                        to={`/movie/${item.id}`}
-                        onClick={onClose}
-                        className={rowClassName}
-                      >
-                        {rowContent}
-                      </NavLink>
-                    )}
+                    <NavLink
+                      to={
+                        isSeries
+                          ? `/series/${item.id}`
+                          : `/movie/${item.id}`
+                      }
+                      onClick={onClose}
+                      aria-label={`View ${
+                        isSeries ? "series" : "film"
+                      } details for ${title}`}
+                      className={rowClassName}
+                    >
+                      {rowContent}
+                    </NavLink>
                   </li>
                 );
               })}

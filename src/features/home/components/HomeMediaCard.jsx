@@ -1,15 +1,10 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import {
-  IoFilmOutline,
-  IoInformationCircleOutline,
-  IoPlay,
-  IoStar,
-} from "react-icons/io5";
+import { IoFilmOutline, IoPlay, IoStar } from "react-icons/io5";
 import { TV_GENRE_MAP } from "../../series/seriesGenres";
 import { MOVIE_GENRE_MAP } from "../homeGenres";
 
-const HomeMediaCard = ({ media, onSelectSeries, className = "" }) => {
+const HomeMediaCard = ({ media, className = "" }) => {
   const isSeries = media.media_type === "tv";
   const title = media.title || media.name || media.original_title || "Untitled";
   const date = media.release_date || media.first_air_date;
@@ -22,6 +17,10 @@ const HomeMediaCard = ({ media, onSelectSeries, className = "" }) => {
   const genre = (media.genre_ids || [])
     .map((id) => genreMap[id])
     .filter(Boolean)[0];
+  const detailsPath = isSeries
+    ? `/series/${media.id}`
+    : `/movie/${media.id}`;
+  const actionLabel = isSeries ? "View Series" : "View Film";
 
   const cardContent = (
     <>
@@ -55,12 +54,8 @@ const HomeMediaCard = ({ media, onSelectSeries, className = "" }) => {
 
         <div className="absolute inset-0 flex items-center justify-center bg-black/45 opacity-0 transition-opacity duration-200 group-hover/card:opacity-100 group-focus-visible/card:opacity-100">
           <span className="inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-2 text-xs font-bold text-color-bg shadow-lg">
-            {isSeries ? (
-              <IoInformationCircleOutline size={15} />
-            ) : (
-              <IoPlay size={13} />
-            )}
-            {isSeries ? "Details" : "View film"}
+            <IoPlay size={13} />
+            {actionLabel}
           </span>
         </div>
       </div>
@@ -82,23 +77,10 @@ const HomeMediaCard = ({ media, onSelectSeries, className = "" }) => {
 
   const cardClassName = `group/card block w-full min-w-0 text-left focus:outline-none ${className}`;
 
-  if (isSeries) {
-    return (
-      <button
-        type="button"
-        onClick={() => onSelectSeries?.(media)}
-        aria-label={`View details for ${title}`}
-        className={cardClassName}
-      >
-        {cardContent}
-      </button>
-    );
-  }
-
   return (
     <NavLink
-      to={`/movie/${media.id}`}
-      aria-label={`View details for ${title}`}
+      to={detailsPath}
+      aria-label={`${actionLabel} details for ${title}`}
       className={cardClassName}
     >
       {cardContent}

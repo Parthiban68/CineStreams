@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import ContentState from "../components/common/ContentState";
 import HomeFooter from "../features/home/components/HomeFooter";
@@ -8,7 +8,6 @@ import HomeKidsPreview from "../features/home/components/HomeKidsPreview";
 import HomeMediaRow from "../features/home/components/HomeMediaRow";
 import HomePageSkeleton from "../features/home/components/skeletons/HomePageSkeleton";
 import useHomePage from "../features/home/hooks/useHomePage";
-import SeriesDetailsModal from "../features/series/components/SeriesDetailsModal";
 
 const HomeStateScreen = ({
   variant = "empty",
@@ -34,11 +33,6 @@ const HomePage = () => {
   const navigate = useNavigate();
   const { hero, featured, sections, kids, genreTiles, loading, error, refetch } =
     useHomePage();
-  const [selectedSeries, setSelectedSeries] = useState(null);
-
-  const closeDetails = useCallback(() => {
-    setSelectedSeries(null);
-  }, []);
 
   const hasContent =
     (sections?.length || 0) > 0 || (kids?.length || 0) > 0;
@@ -87,15 +81,12 @@ const HomePage = () => {
     });
   };
 
-  const handleWatchNow = (item) => {
+  const handleViewDetails = (item) => {
     if (!item) return;
 
-    if (item.media_type === "tv") {
-      setSelectedSeries(item);
-      return;
-    }
-
-    navigate(`/movie/${item.id}`);
+    navigate(
+      item.media_type === "tv" ? `/series/${item.id}` : `/movie/${item.id}`
+    );
   };
 
   return (
@@ -103,7 +94,7 @@ const HomePage = () => {
       <HomeHero
         items={featured}
         onExplore={handleExplore}
-        onWatchNow={handleWatchNow}
+        onViewDetails={handleViewDetails}
       />
 
       <main
@@ -114,11 +105,7 @@ const HomePage = () => {
         {sections?.length > 0 && (
           <div className="space-y-12 md:space-y-16">
             {sections.map((section) => (
-              <HomeMediaRow
-                key={section.key}
-                section={section}
-                onSelectSeries={setSelectedSeries}
-              />
+              <HomeMediaRow key={section.key} section={section} />
             ))}
           </div>
         )}
@@ -130,13 +117,6 @@ const HomePage = () => {
       </main>
 
       <HomeFooter />
-
-      {selectedSeries && (
-        <SeriesDetailsModal
-          series={selectedSeries}
-          onClose={closeDetails}
-        />
-      )}
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useRef } from "react";
+import { IoPlay } from "react-icons/io5";
 import useMoviesCard from "../hooks/useMoviesCard";
 import { NavLink } from "react-router-dom";
 import useHomeMovies from "../hooks/useHomeMovies";
@@ -100,6 +101,10 @@ function MovieCardMini({
         <div className="text-xs font-bold text-white">
           {formatReleaseDate(release_date)}
         </div>
+        <span className="mt-3 inline-flex w-fit items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-[11px] font-bold text-color-bg">
+          <IoPlay size={11} />
+          View Film
+        </span>
       </div>
 
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-24 rounded-b-xl bg-gradient-to-t from-black/70 to-transparent" />
@@ -138,6 +143,9 @@ function MovieHorizontalScroll({ movies }) {
           <NavLink
             key={movie.id}
             to={`/movie/${movie.id}`}
+            aria-label={`View film details for ${
+              movie.title || movie.original_title || "Untitled"
+            }`}
             className="shrink-0 snap-start"
           >
             <MovieCardMini {...movie} />

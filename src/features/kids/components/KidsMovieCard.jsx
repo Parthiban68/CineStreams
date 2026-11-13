@@ -22,6 +22,7 @@ const KidsMovieCard = ({ movie }) => {
   return (
     <NavLink
       to={`/movie/${id}`}
+      aria-label={`View film details for ${displayTitle}`}
       className="group/card block w-[9.75rem] shrink-0 snap-start focus:outline-none sm:w-40 md:w-44 lg:w-48 2xl:w-52"
     >
       <div className="relative aspect-[2/3] overflow-hidden rounded-2xl bg-white/[0.04] ring-1 ring-white/[0.06] transition duration-200 group-hover/card:ring-white/20 group-focus-visible/card:ring-kids-accent">
@@ -48,8 +49,9 @@ const KidsMovieCard = ({ movie }) => {
         )}
 
         <div className="absolute inset-0 flex items-center justify-center bg-black/35 opacity-0 transition-opacity duration-200 group-hover/card:opacity-100 group-focus-visible/card:opacity-100">
-          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-color-bg shadow-lg transition-transform duration-200 group-hover/card:scale-105">
-            <IoPlay className="ml-0.5" size={18} />
+          <span className="inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-2 text-xs font-bold text-color-bg shadow-lg transition-transform duration-200 group-hover/card:scale-105">
+            <IoPlay className="ml-0.5" size={13} />
+            View Film
           </span>
         </div>
       </div>

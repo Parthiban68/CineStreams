@@ -1,6 +1,5 @@
-import React, { useCallback, useState } from "react";
+import React from "react";
 import ContentState from "../components/common/ContentState";
-import SeriesDetailsModal from "../features/series/components/SeriesDetailsModal";
 import SeriesGenreBrowser from "../features/series/components/SeriesGenreBrowser";
 import SeriesHero from "../features/series/components/SeriesHero";
 import SeriesRow from "../features/series/components/SeriesRow";
@@ -30,11 +29,6 @@ const SeriesStateScreen = ({
 const SeriesPage = () => {
   const { hero, heroDetails, sections, loading, error, refetch } =
     useSeriesPage();
-  const [selectedSeries, setSelectedSeries] = useState(null);
-
-  const closeDetails = useCallback(() => {
-    setSelectedSeries(null);
-  }, []);
 
   if (loading || (!sections && !error)) {
     return <SeriesPageSkeleton />;
@@ -85,34 +79,19 @@ const SeriesPage = () => {
         series={hero}
         details={heroDetails}
         onExplore={handleExplore}
-        onMoreInfo={() => setSelectedSeries(hero)}
       />
 
       <main className="mx-auto w-full max-w-[1600px] px-5 pb-24 pt-10 sm:px-8 sm:pt-12 lg:px-14 lg:pt-14">
         <div className="space-y-12 md:space-y-16">
           {sections.map((section) => (
-            <SeriesRow
-              key={section.key}
-              section={section}
-              onSelectSeries={setSelectedSeries}
-            />
+            <SeriesRow key={section.key} section={section} />
           ))}
         </div>
 
         <div className="mt-16 md:mt-20">
-          <SeriesGenreBrowser onSelectSeries={setSelectedSeries} />
+          <SeriesGenreBrowser />
         </div>
       </main>
-
-      {selectedSeries && (
-        <SeriesDetailsModal
-          series={selectedSeries}
-          initialDetails={
-            selectedSeries.id === hero?.id ? heroDetails : null
-          }
-          onClose={closeDetails}
-        />
-      )}
     </div>
   );
 };

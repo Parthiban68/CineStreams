@@ -4,7 +4,7 @@ import HomeMediaCard from "./HomeMediaCard";
 
 const getMediaKey = (item) => `${item.media_type}-${item.id}`;
 
-const HomeMediaRow = ({ section, onSelectSeries }) => {
+const HomeMediaRow = ({ section }) => {
   const scrollRef = useRef(null);
 
   if (!section?.items?.length) return null;
@@ -72,7 +72,7 @@ const HomeMediaRow = ({ section, onSelectSeries }) => {
             key={getMediaKey(item)}
             className="w-[9.75rem] shrink-0 snap-start sm:w-40 md:w-44 lg:w-48 2xl:w-52"
           >
-            <HomeMediaCard media={item} onSelectSeries={onSelectSeries} />
+            <HomeMediaCard media={item} />
           </div>
         ))}
       </div>

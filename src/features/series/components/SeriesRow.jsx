@@ -5,7 +5,7 @@ import {
 } from "react-icons/io5";
 import SeriesCard from "./SeriesCard";
 
-const SeriesRow = ({ section, onSelectSeries }) => {
+const SeriesRow = ({ section }) => {
   const scrollRef = useRef(null);
 
   if (!section?.items?.length) return null;
@@ -69,7 +69,7 @@ const SeriesRow = ({ section, onSelectSeries }) => {
             key={series.id}
             className="w-[9.75rem] shrink-0 snap-start sm:w-40 md:w-44 lg:w-48 2xl:w-52"
           >
-            <SeriesCard series={series} onSelect={onSelectSeries} />
+            <SeriesCard series={series} />
           </div>
         ))}
       </div>

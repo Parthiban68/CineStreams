@@ -212,7 +212,7 @@ const HeroSelector = ({
   );
 };
 
-const HomeHero = ({ items = [], onExplore, onWatchNow }) => {
+const HomeHero = ({ items = [], onExplore, onViewDetails }) => {
   const safeItems = useMemo(
     () => (Array.isArray(items) ? items : []),
     [items]
@@ -421,6 +421,7 @@ const HomeHero = ({ items = [], onExplore, onWatchNow }) => {
   const { isSeries, year, rating, genres } = getMediaMeta(displayedItem);
   const title = getMediaTitle(displayedItem);
   const overview = displayedItem.overview;
+  const primaryActionLabel = isSeries ? "View Series" : "View Film";
 
   return (
     <section
@@ -536,14 +537,14 @@ const HomeHero = ({ items = [], onExplore, onWatchNow }) => {
             <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
               <button
                 type="button"
-                onClick={() => onWatchNow?.(displayedItem)}
+                onClick={() => onViewDetails?.(displayedItem)}
                 className="group inline-flex h-12 w-full items-center justify-center gap-2.5 rounded-full bg-white px-7 text-sm font-bold text-color-bg transition duration-200 hover:-translate-y-0.5 hover:bg-color-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-color-primary focus-visible:ring-offset-2 focus-visible:ring-offset-color-bg active:translate-y-0 sm:w-auto"
               >
                 <IoPlay
                   size={16}
                   className="transition duration-200 group-hover:translate-x-0.5"
                 />
-                Watch Now
+                {primaryActionLabel}
               </button>
               <button
                 type="button"

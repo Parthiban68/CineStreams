@@ -1,14 +1,14 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 import {
   IoAlbumsOutline,
-  IoInformationCircleOutline,
   IoPlay,
   IoSparkles,
   IoStar,
 } from "react-icons/io5";
 import { TV_GENRE_MAP } from "../seriesGenres";
 
-const SeriesHero = ({ series, details, onExplore, onMoreInfo }) => {
+const SeriesHero = ({ series, details, onExplore }) => {
   if (!series) return null;
 
   const title =
@@ -111,14 +111,13 @@ const SeriesHero = ({ series, details, onExplore, onMoreInfo }) => {
               <IoPlay size={16} />
               Explore Series
             </button>
-            <button
-              type="button"
-              onClick={onMoreInfo}
+            <NavLink
+              to={`/series/${series.id}`}
               className="inline-flex h-11 items-center gap-2 rounded-full border border-white/20 bg-white/10 px-6 text-sm font-semibold text-white backdrop-blur-sm transition duration-200 hover:border-white/35 hover:bg-white/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-color-bg"
             >
-              <IoInformationCircleOutline size={18} />
-              More Info
-            </button>
+              <IoPlay size={16} />
+              View Series
+            </NavLink>
           </div>
         </div>
       </div>

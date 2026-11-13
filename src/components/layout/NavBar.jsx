@@ -8,7 +8,6 @@ import {
 import { NavLink, useLocation } from "react-router-dom";
 import Button from "../common/Button";
 import SearchPanel from "../../features/search/components/SearchPanel";
-import SeriesDetailsModal from "../../features/series/components/SeriesDetailsModal";
 
 const navItems = [
   { key: "home", label: "Home", to: "/" },
@@ -37,7 +36,6 @@ const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [selectedSeries, setSelectedSeries] = useState(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 12);
@@ -51,7 +49,6 @@ const NavBar = () => {
   useEffect(() => {
     setMenuOpen(false);
     setSearchOpen(false);
-    setSelectedSeries(null);
   }, [location.pathname]);
 
   useEffect(() => {
@@ -206,10 +203,7 @@ const NavBar = () => {
         {searchOpen && (
           <div className="border-t border-white/10 bg-color-bg/95 shadow-2xl backdrop-blur-xl">
             <div className="px-5 py-4 sm:px-8 lg:px-14">
-              <SearchPanel
-                onClose={() => setSearchOpen(false)}
-                onSelectSeries={setSelectedSeries}
-              />
+              <SearchPanel onClose={() => setSearchOpen(false)} />
             </div>
           </div>
         )}
@@ -243,13 +237,6 @@ const NavBar = () => {
           </div>
         )}
       </header>
-
-      {selectedSeries && (
-        <SeriesDetailsModal
-          series={selectedSeries}
-          onClose={() => setSelectedSeries(null)}
-        />
-      )}
     </>
   );
 };

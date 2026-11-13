@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { IoPlay } from "react-icons/io5";
 import { NavLink, useParams } from "react-router-dom";
 import useSeeAllMovies from "../hooks/useSeeAllMovies";
 import {
@@ -96,6 +97,9 @@ const SeeAllMovieCards = () => {
           <NavLink
             key={movie.id}
             to={`/movie/${movie.id}`}
+            aria-label={`View film details for ${
+              movie.title || movie.original_title || "Untitled"
+            }`}
             className="group min-w-0"
           >
             <article className="flex h-full flex-col">
@@ -112,6 +116,12 @@ const SeeAllMovieCards = () => {
                   loading="lazy"
                 />
                 <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/70 to-transparent" />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/45 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100">
+                  <span className="inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-2 text-xs font-bold text-color-bg shadow-lg">
+                    <IoPlay size={13} />
+                    View Film
+                  </span>
+                </div>
               </div>
 
               <h2 className="mt-3 truncate text-sm font-semibold text-white sm:text-base">
